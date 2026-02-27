@@ -11,7 +11,7 @@ namespace BarcodePrinterApp
     public partial class Form1 : Form
     {
         private string _prnFilePath = string.Empty;
-        private static int _kabulSayac = 1;
+        private static readonly Random _rng = new Random();
 
         public Form1()
         {
@@ -63,7 +63,14 @@ namespace BarcodePrinterApp
 
         private string UretKabulKodu()
         {
-            return string.Format("DK{0:D6}", _kabulSayac);
+            // 24 karakter: "ABDE" + 20 rastgele hex karakter (0-9, A-F)
+            const string prefix  = "ABDE";
+            const string alfabe  = "0123456789ABCDEF";
+            const int    rastLen = 20;
+            char[] rastgele = new char[rastLen];
+            for (int i = 0; i < rastLen; i++)
+                rastgele[i] = alfabe[_rng.Next(alfabe.Length)];
+            return prefix + new string(rastgele);
         }
 
         private void btnPrn_Click(object sender, EventArgs e)
@@ -136,7 +143,6 @@ namespace BarcodePrinterApp
                     }
                 }
             }
-            _kabulSayac++;
             txtKabulKodu.Text = UretKabulKodu();
         }
 
@@ -278,3 +284,4 @@ namespace BarcodePrinterApp
         }
     }
 }
+
